@@ -20,3 +20,19 @@ export const authenticate = (req, res, next) => {
     return res.status(401).json({ message: "Invalid token!" });
   }
 };
+
+export const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !req.user.role) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "You don't have permission to access this resource!",
+      });
+    }
+
+    next();
+  };
+};
