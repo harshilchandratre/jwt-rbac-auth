@@ -61,8 +61,16 @@ export const login = async (req, res) => {
       { expiresIn: "1h" },
     );
 
-    res.json({
-      token,
+    // store token as cookie in client
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      message: "Login Successful!",
       user: {
         id: user._id,
         name: user.name,
@@ -73,4 +81,9 @@ export const login = async (req, res) => {
     console.error("Login error: ", err);
     res.status(500).json({ message: "Login failed" });
   }
+};
+
+export const logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully!" });
 };
