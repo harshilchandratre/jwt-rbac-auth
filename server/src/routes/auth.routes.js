@@ -8,7 +8,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
 
-router.get("/me", authenticate, authorize("admin"), (req, res) => {
+router.get("/me", authenticate, (req, res) => {
   res.json({
     message: "Authenticated!",
     user: req.user,
